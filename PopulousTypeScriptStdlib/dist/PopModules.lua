@@ -1,0 +1,28 @@
+--[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
+if not __POP_MODULES_ALL_IMPORTED then
+    __POP_MODULES_ALL_IMPORTED = true
+    import(Module_Commands)
+    import(Module_Control)
+    import(Module_DataTypes)
+    import(Module_Defines)
+    import(Module_Draw)
+    import(Module_Game)
+    import(Module_GameStates)
+    import(Module_Globals)
+    import(Module_Helpers)
+    import(Module_Level)
+    import(Module_Map)
+    import(Module_MapWho)
+    import(Module_Objects)
+    import(Module_Person)
+    import(Module_Players)
+    import(Module_PopScript)
+    import(Module_Sound)
+    import(Module_StringTools)
+    import(Module_System)
+    import(Module_Table)
+    import(Module_Package)
+    import(Module_Math)
+    import(Module_Shapes)
+    import(Module_String)
+end

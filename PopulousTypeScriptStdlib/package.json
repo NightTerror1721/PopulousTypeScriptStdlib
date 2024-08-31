@@ -1,0 +1,25 @@
+{
+    "name": "tstl-populous-stdlib",
+    "version": "0.1.0",
+    "description": "",
+    "files": [
+        "dist/**/*.lua",
+        "dist/**/*.d.ts"
+    ],
+    "types": "./dist/index.d.ts",
+    "main": "./dist/index",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tstl"
+    },
+    "devDependencies": {
+        "typescript": "^5.4.2",
+        "typescript-to-lua": "^1.25.1"
+    },
+    "author": "krampus1721",
+    "license": "GPL-3.0-only",
+    "dependencies": {
+        "tstl-populous-api": "^0.1.1",
+        "tstl-populous-stdlib": "file:"
+    }
+}

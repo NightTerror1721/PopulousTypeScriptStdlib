@@ -1,0 +1,36 @@
+import "./PopModules";
+export declare class Time {
+    static readonly TURNS_PER_SECOND = 12;
+    static readonly SECONDS_PER_TURN: number;
+    readonly turn: number;
+    readonly seconds: number;
+    private constructor();
+    static current(this: void): Time;
+    static toTurns(seconds: number): number;
+    static toSeconds(turns: number): number;
+    static fromSeconds(seconds: number): Time;
+    static fromTurns(turns: number): Time;
+    static get currentTurns(): number;
+    static get currentSeconds(): number;
+    isTurn(turn: number): boolean;
+    isAtLeastTurn(turn: number): boolean;
+    isAtMostTurn(turn: number): boolean;
+    isBetweenTurns(minTurn: number, maxTurn: number): boolean;
+    is(seconds: number): boolean;
+    isAtLeast(seconds: number): boolean;
+    isAtMost(seconds: number): boolean;
+    isBetween(minSeconds: number, maxSeconds: number): boolean;
+    equals(other: Time): boolean;
+    everyTurns(turns: number, initialDelayTurns: number, action: (this: void) => void): boolean;
+    everyTurns(turns: number, initialDelayTurns: number): boolean;
+    everyTurns(turns: number): boolean;
+    everyPowTurns(base: number, exponent: number, initialDelayTurns: number, action: (this: void) => void): boolean;
+    everyPowTurns(base: number, exponent: number, initialDelayTurns: number): boolean;
+    everyPowTurns(base: number, exponent: number): boolean;
+    every2PowTurns(base: number, initialDelayTurns: number, action: (this: void) => void): boolean;
+    every2PowTurns(base: number, initialDelayTurns: number): boolean;
+    every2PowTurns(base: number): boolean;
+    every(seconds: number, initialDelaySeconds: number, action: (this: void) => void): boolean;
+    every(seconds: number, initialDelaySeconds: number): boolean;
+    every(seconds: number): boolean;
+}
