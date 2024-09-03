@@ -131,6 +131,7 @@ export namespace Flyby
 
     export interface EventLocation extends TemporaryEvent
     {
+        readonly eventType: Event.Type.LOCATION
         x: number
         z: number
     }
@@ -149,6 +150,7 @@ export namespace Flyby
 
     export interface EventAngle extends TemporaryEvent
     {
+        readonly eventType: Event.Type.ANGLE
         angle: number
     }
     export function EventAngle(angle: number, start: number, duration: number): EventAngle
@@ -158,6 +160,7 @@ export namespace Flyby
 
     export interface EventZoom extends TemporaryEvent
     {
+        readonly eventType: Event.Type.ZOOM
         zoom: number
     }
     export function EventZoom(zoom: number, start: number, duration: number): EventZoom
@@ -165,8 +168,11 @@ export namespace Flyby
         return { eventType: Event.Type.ZOOM, zoom: zoom, start: start, duration: duration }
     }
 
-    export interface EventTooltip extends EventLocation
+    export interface EventTooltip extends TemporaryEvent
     {
+        readonly eventType: Event.Type.TOOLTIP
+        x: number
+        z: number
         code: number
     }
     export function EventTooltip(x: number, z: number, code: number, start: number, duration: number): EventTooltip
@@ -184,6 +190,7 @@ export namespace Flyby
 
     export interface EventDialog extends Event
     {
+        readonly eventType: Event.Type.DIALOG
         dialogIdx: number
     }
     export function EventDialog(dialogIdx: number, start: number)

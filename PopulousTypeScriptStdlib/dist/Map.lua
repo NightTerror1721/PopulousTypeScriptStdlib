@@ -245,7 +245,7 @@ do
     end
     function Map.findFirstThingOf(____type, model, xOrLoc, zOrRadius, radiusOrShape, shapeOrUndef)
         local function predicate(thing)
-            return thing.Type ~= ____type or thing.Model ~= model
+            return thing.Type ~= ____type or model ~= 0 and thing.Model ~= model
         end
         local x
         local z

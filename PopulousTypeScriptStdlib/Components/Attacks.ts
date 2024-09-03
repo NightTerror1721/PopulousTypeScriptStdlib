@@ -62,6 +62,8 @@ class AttackControllerEntry
         this.entryId = entryId
         this._template = template
         this._controllerState = controllerState
+        this._controllerState.entries[this.entryId] = {} as AttackControllerEntryState
+        this.enable()
     }
 
     private get state() { return this._controllerState.entries[this.entryId] }
@@ -168,7 +170,7 @@ interface AttackControllerEntryState
 
 interface AttackControllerState
 {
-    entries: AttackControllerEntryState[]
+    entries: Record<number, AttackControllerEntryState>
 }
 
 
@@ -183,6 +185,10 @@ export class AttackController extends BaseControllerScriptComponent<AttackContro
 
         this._entries = {}
         this._lastUpdate = undefined
+
+        this.state = {
+            entries: {}
+        }
     }
 
     public registerEntry(entryId: number, template: AttackTemplate): void

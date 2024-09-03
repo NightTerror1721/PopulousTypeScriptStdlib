@@ -17,6 +17,9 @@ do
     function IMath.imin(a, b)
         return IMath.toInteger(math.min(a, b))
     end
+    function IMath.inatural(n)
+        return IMath.imax(0, n)
+    end
     function IMath.iclamp(n, min, max)
         return IMath.toInteger(math.max(
             min,

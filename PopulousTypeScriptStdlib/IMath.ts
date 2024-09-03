@@ -14,6 +14,8 @@ export namespace IMath
     export function imax(a: number, b: number): number { return toInteger(Math.max(a, b)) }
     export function imin(a: number, b: number): number { return toInteger(Math.min(a, b)) }
 
+    export function inatural(n: number): number { return imax(0, n) }
+
     export function iclamp(n: number, min: number, max: number): number
     {
         return toInteger(Math.max(min, Math.min(max, n)))

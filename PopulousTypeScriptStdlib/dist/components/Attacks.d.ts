@@ -48,7 +48,7 @@ interface AttackControllerEntryState {
     periodSeconds: number;
 }
 interface AttackControllerState {
-    entries: AttackControllerEntryState[];
+    entries: Record<number, AttackControllerEntryState>;
 }
 export declare class AttackController extends BaseControllerScriptComponent<AttackControllerState> {
     private readonly _entries;

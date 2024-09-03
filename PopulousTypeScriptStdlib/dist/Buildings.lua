@@ -6,10 +6,14 @@ local ____exports = {}
 require("PopModules")
 local ____Flags = require("Flags")
 local Flags = ____Flags.Flags
+local ____Location = require("Location")
+local Coord = ____Location.Coord
 local ____Things = require("Things")
 local createBuilding = ____Things.createBuilding
 local ____Map = require("Map")
 local Map = ____Map.Map
+local ____Markers = require("Markers")
+local Marker = ____Markers.Marker
 local _gsi = gsi()
 ____exports.InternalBuildingModel = {}
 local InternalBuildingModel = ____exports.InternalBuildingModel
@@ -36,7 +40,7 @@ do
         return model and Mapper[model] or nil
     end
 end
-local ValidOrientations = {[1000] = 1000, [1500] = 1500, [0] = 0, [500] = 500}
+local ValidOrientations = {[2] = 2, [3] = 3, [0] = 0, [1] = 1}
 function ____exports.isValidBuildingOrientation(self, orientation)
     return ValidOrientations[orientation] ~= nil
 end
@@ -60,6 +64,34 @@ function Building.prototype.createNewInWorld(self, location, orientation)
         end
     end
     return building
+end
+function Building.prototype.placeDownShape(self, pos, orientation, mode)
+    local cell
+    if Marker:isMarker(pos) then
+        cell = pos.location.mapPosXZ.Pos
+    elseif pos.coordType ~= nil then
+        cell = pos.mapPosXZ.Pos
+    else
+        cell = Coord.makeXZ(pos[1], pos[2]).Pos
+    end
+    process_shape_map_elements(
+        cell,
+        self.model,
+        orientation,
+        self.tribe,
+        mode
+    )
+end
+function Building.prototype.canPlaceDownShape(self, pos, orientation, mode)
+    local cell
+    if Marker:isMarker(pos) then
+        cell = pos.location.mapPosXZ.Pos
+    elseif pos.coordType ~= nil then
+        cell = pos.mapPosXZ.Pos
+    else
+        cell = Coord.makeXZ(pos[1], pos[2]).Pos
+    end
+    return is_shape_valid_at_map_pos(cell, self.model, orientation, self.tribe) ~= 0
 end
 function Building.prototype.findAtPos(self, xOrLoc, zOrRadius, radiusOrUndef)
     local x

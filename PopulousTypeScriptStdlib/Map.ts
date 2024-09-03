@@ -266,7 +266,7 @@ export namespace Map
         shapeOrUndef?: SearchShapeType
     ): Thing|undefined
     {
-        const predicate = (thing: Thing) => thing.Type !== type || thing.Model !== model
+        const predicate = (thing: Thing) => thing.Type !== type || (model !== 0 && thing.Model !== model)
 
         let x: number
         let z: number

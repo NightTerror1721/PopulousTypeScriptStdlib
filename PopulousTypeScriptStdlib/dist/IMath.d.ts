@@ -10,6 +10,7 @@ export declare namespace IMath {
     function toInteger(n: number): number;
     function imax(a: number, b: number): number;
     function imin(a: number, b: number): number;
+    function inatural(n: number): number;
     function iclamp(n: number, min: number, max: number): number;
 }
 export {};

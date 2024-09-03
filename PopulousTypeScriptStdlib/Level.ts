@@ -29,6 +29,7 @@ type ComponentPool = Record<string, ScriptComponent>
 interface ScriptComponentContainer
 {
     registerComponent(component: ScriptComponent): boolean
+    getTypedLocalData<T extends LocalDataObject>(): T
 }
 interface ScriptComponentContainerImpl extends ScriptComponentContainer
 {
@@ -67,6 +68,8 @@ namespace LevelScriptInternal
 
     export const TribesWithImposedElements: Record<TribeID, Tribe> = {}
     export const TribesWithImposedElementsList: Tribe[] = []
+
+    export const GlobalData: LocalDataObject = {}
 
     export function GlobalOnTurn(): void
     {
@@ -225,6 +228,7 @@ namespace LevelScriptInternal
         const saver = new LocalDataSaver(writer)
         saver.put("tribes", tribes)
         saver.put("envs", envs)
+        saver.put("globalData", GlobalData)
         saver.save()
     }
 
@@ -256,25 +260,33 @@ namespace LevelScriptInternal
                 injectComponentsLoadData(script.components, entry.data.components)
             }
         }
+
+        const globals = loader.get("globalData") as LocalDataObject
+        Object.assign(GlobalData, globals)
     }
 }
 
 export namespace LevelScript
 {
-    export function getTribeLocalData(tribe: Tribe): LocalDataObject
+    export function getGlobalData<T extends LocalDataObject = LocalDataObject>(): T
+    {
+        return LevelScriptInternal.GlobalData as T
+    }
+
+    export function getTribeLocalData<T extends LocalDataObject = LocalDataObject>(tribe: Tribe): T
     {
         if(!(tribe.id in LevelScriptInternal.Tribes))
             error(`Tribe script ${tribe.name} not found`)
 
-        return LevelScriptInternal.Tribes[tribe.id].localData
+        return LevelScriptInternal.Tribes[tribe.id].localData as T
     }
 
-    export function getEnvironmentLocalData(name: string): LocalDataObject
+    export function getEnvironmentLocalData<T extends LocalDataObject = LocalDataObject>(name: string): T
     {
         if(!(name in LevelScriptInternal.Environments))
             error(`Environment script ${name} not found`)
 
-        return LevelScriptInternal.Environments[name].localData
+        return LevelScriptInternal.Environments[name].localData as T
     }
 
     function registerComponentMethod(this: ScriptComponentContainerImpl, component: ScriptComponent): boolean
@@ -284,6 +296,11 @@ export namespace LevelScript
 
         this.components[component.name] = component
         return true
+    }
+
+    function getTypedLocalDataMethod<T extends LocalDataObject>(this: TribeLevelScript | EnvironmentLevelScript): T
+    {
+        return this.localData as T 
     }
 
     export function registerTribe(tribe: Tribe, components?: ScriptComponent[], hooks?: LevelScriptHooks): TribeLevelScript
@@ -296,7 +313,8 @@ export namespace LevelScript
             localData: {},
             hooks: hooks ? hooks : {},
             components: {},
-            registerComponent: registerComponentMethod
+            registerComponent: registerComponentMethod,
+            getTypedLocalData: getTypedLocalDataMethod
         }
 
         components?.forEach(component => script.registerComponent(component))
@@ -316,7 +334,8 @@ export namespace LevelScript
             localData: {},
             hooks: hooks ? hooks : {},
             components: {},
-            registerComponent: registerComponentMethod
+            registerComponent: registerComponentMethod,
+            getTypedLocalData: getTypedLocalDataMethod
         }
 
         components?.forEach(component => script.registerComponent(component))

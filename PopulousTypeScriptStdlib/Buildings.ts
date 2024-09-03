@@ -1,8 +1,9 @@
 import "./PopModules"
 import { Flags } from "./Flags"
-import { Location } from "./Location"
+import { Coord, Location } from "./Location"
 import { BuildingModel, ThingType, createBuilding } from "./Things"
-import { Map } from "./Map"
+import { Map, MapCell } from "./Map"
+import { Marker } from "./Markers"
 
 const _gsi = gsi()
 
@@ -32,10 +33,20 @@ export namespace InternalBuildingModel
 
 export const enum BuildingOrientation
 {
-    North = 1000,
-    East = 1500,
+    North = 2,
+    East = 3,
     South = 0,
-    West = 500
+    West = 1
+}
+
+/** @compileMembersOnly */
+export const enum PlaceDownBuildingShapeMode
+{
+    /** @customName SHME_MODE_SET_TMP */ SetTemporary = Constant.SHME_MODE_SET_TMP,
+    /** @customName SHME_MODE_REMOVE_TMP */ RemoveTemporary = Constant.SHME_MODE_REMOVE_TMP,
+    /** @customName SHME_MODE_SET_PERM */ SetPermanent = Constant.SHME_MODE_SET_PERM,
+    /** @customName SHME_MODE_REMOVE_PERM */ RemovePermanent = Constant.SHME_MODE_REMOVE_PERM,
+    /** @customName SHME_MODE_CONVERT_TO_BLDG */ ConvertToBuilding = Constant.SHME_MODE_CONVERT_TO_BLDG
 }
 
 const ValidOrientations = {
@@ -117,6 +128,38 @@ export class Building
                 building.AngleXZ = orientation
         }
         return building
+    }
+
+    placeDownShape(location: Location, orientation: BuildingOrientation, mode: PlaceDownBuildingShapeMode): void
+    placeDownShape(mapCell: MapCell, orientation: BuildingOrientation, mode: PlaceDownBuildingShapeMode): void
+    placeDownShape(marker: Marker, orientation: BuildingOrientation, mode: PlaceDownBuildingShapeMode): void
+    placeDownShape(pos: Location|MapCell|Marker, orientation: BuildingOrientation, mode: PlaceDownBuildingShapeMode): void
+    {
+        let cell: number
+        if(Marker.isMarker(pos))
+            cell = pos.location.mapPosXZ.Pos
+        else if("coordType" in pos)
+            cell = pos.mapPosXZ.Pos
+        else
+            cell = Coord.makeXZ(pos[0], pos[1]).Pos
+
+        process_shape_map_elements(cell, this.model, orientation, this.tribe, mode)
+    }
+
+    canPlaceDownShape(location: Location, orientation: BuildingOrientation, mode: PlaceDownBuildingShapeMode): boolean
+    canPlaceDownShape(mapCell: MapCell, orientation: BuildingOrientation, mode: PlaceDownBuildingShapeMode): boolean
+    canPlaceDownShape(marker: Marker, orientation: BuildingOrientation, mode: PlaceDownBuildingShapeMode): boolean
+    canPlaceDownShape(pos: Location|MapCell|Marker, orientation: BuildingOrientation, mode: PlaceDownBuildingShapeMode): boolean
+    {
+        let cell: number
+        if(Marker.isMarker(pos))
+            cell = pos.location.mapPosXZ.Pos
+        else if("coordType" in pos)
+            cell = pos.mapPosXZ.Pos
+        else
+            cell = Coord.makeXZ(pos[0], pos[1]).Pos
+
+        return is_shape_valid_at_map_pos(cell, this.model, orientation, this.tribe) !== 0
     }
 
     findAtPos(x: number, z: number, radius: number): Thing|undefined

@@ -19,6 +19,7 @@ export interface LevelScriptHooks {
 }
 interface ScriptComponentContainer {
     registerComponent(component: ScriptComponent): boolean;
+    getTypedLocalData<T extends LocalDataObject>(): T;
 }
 export interface TribeLevelScript extends ScriptComponentContainer {
     readonly tribe: Tribe;
@@ -31,8 +32,9 @@ export interface EnvironmentLevelScript extends ScriptComponentContainer {
     readonly hooks: LevelScriptHooks;
 }
 export declare namespace LevelScript {
-    function getTribeLocalData(tribe: Tribe): LocalDataObject;
-    function getEnvironmentLocalData(name: string): LocalDataObject;
+    function getGlobalData<T extends LocalDataObject = LocalDataObject>(): T;
+    function getTribeLocalData<T extends LocalDataObject = LocalDataObject>(tribe: Tribe): T;
+    function getEnvironmentLocalData<T extends LocalDataObject = LocalDataObject>(name: string): T;
     function registerTribe(tribe: Tribe, components?: ScriptComponent[], hooks?: LevelScriptHooks): TribeLevelScript;
     function registerEnvironmentScript(name: string, components?: ScriptComponent[], hooks?: LevelScriptHooks): EnvironmentLevelScript;
     function registerComponent(tribe: TribeID, component: ScriptComponent): boolean;

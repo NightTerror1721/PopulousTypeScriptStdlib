@@ -31,6 +31,8 @@ function AttackControllerEntry.prototype.____constructor(self, entryId, template
     self.entryId = entryId
     self._template = template
     self._controllerState = controllerState
+    self._controllerState.entries[self.entryId] = {}
+    self:enable()
 end
 function AttackControllerEntry.prototype.computeNextPeriod(self)
     local period = math.max(0, self._template.everySeconds or 0)
@@ -103,7 +105,7 @@ __TS__SetDescriptor(
     AttackControllerEntry.prototype,
     "state",
     {get = function(self)
-        return self._controllerState.entries[self.entryId + 1]
+        return self._controllerState.entries[self.entryId]
     end},
     true
 )
@@ -167,6 +169,7 @@ function AttackController.prototype.____constructor(self, tribe)
     BaseControllerScriptComponent.prototype.____constructor(self, "AttackController", tribe)
     self._entries = {}
     self._lastUpdate = nil
+    self.state = {entries = {}}
 end
 function AttackController.prototype.registerEntry(self, entryId, template)
     local entry = __TS__New(

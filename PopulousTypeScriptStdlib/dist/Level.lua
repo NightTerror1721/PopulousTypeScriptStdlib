@@ -25,6 +25,7 @@ do
     LevelScriptInternal.EnvironmentsList = {}
     LevelScriptInternal.TribesWithImposedElements = {}
     LevelScriptInternal.TribesWithImposedElementsList = {}
+    LevelScriptInternal.GlobalData = {}
     function LevelScriptInternal.GlobalOnTurn()
         local deltaTime = Time.current()
         if deltaTime:isTurn(0) then
@@ -154,6 +155,7 @@ do
         local saver = __TS__New(LocalDataSaver, writer)
         saver:put("tribes", tribes)
         saver:put("envs", envs)
+        saver:put("globalData", LevelScriptInternal.GlobalData)
         saver:save()
     end
     function LevelScriptInternal.GlobalOnLoad(reader)
@@ -177,11 +179,16 @@ do
                 injectComponentsLoadData(script.components, entry.data.components)
             end
         end
+        local globals = loader:get("globalData")
+        __TS__ObjectAssign(LevelScriptInternal.GlobalData, globals)
     end
 end
 ____exports.LevelScript = {}
 local LevelScript = ____exports.LevelScript
 do
+    function LevelScript.getGlobalData()
+        return LevelScriptInternal.GlobalData
+    end
     function LevelScript.getTribeLocalData(tribe)
         if not (LevelScriptInternal.Tribes[tribe.id] ~= nil) then
             error(nil, ("Tribe script " .. tribe.name) .. " not found")
@@ -201,6 +208,9 @@ do
         self.components[component.name] = component
         return true
     end
+    local function getTypedLocalDataMethod(self)
+        return self.localData
+    end
     function LevelScript.registerTribe(tribe, components, hooks)
         if LevelScriptInternal.Tribes[tribe.id] ~= nil then
             error(nil, "Duplicated tribe script " .. tribe.name)
@@ -210,7 +220,8 @@ do
             localData = {},
             hooks = hooks and hooks or ({}),
             components = {},
-            registerComponent = registerComponentMethod
+            registerComponent = registerComponentMethod,
+            getTypedLocalData = getTypedLocalDataMethod
         }
         local ____opt_0 = components
         if ____opt_0 ~= nil then
@@ -233,7 +244,8 @@ do
             localData = {},
             hooks = hooks and hooks or ({}),
             components = {},
-            registerComponent = registerComponentMethod
+            registerComponent = registerComponentMethod,
+            getTypedLocalData = getTypedLocalDataMethod
         }
         local ____opt_3 = components
         if ____opt_3 ~= nil then
